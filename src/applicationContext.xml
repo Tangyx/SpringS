@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+	<bean id="student" class="Boh.Sp.Entity.Student"></bean>
+	<bean id="studentDaoImpl" class="Boh.Sp.Dao.impl.StudentDaoImpl"></bean>
+	<bean id="studentServiceImpl" class="Boh.Sp.Service.impl.StudentServiceImpl">
+		<property name="dao" ref="studentDaoImpl"></property>
+	</bean>
+	
+	<bean id="beforeAdvice" class="Boh.Sp.Log.BeforeAdvice"></bean>
+	<bean id="afterAdvice" class="Boh.Sp.Log.AfterAdvice"></bean>
+	<!-- 支持AOP的驱动 -->
+	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+	<aop:config>
+		<aop:pointcut expression="execution(* Boh.Sp.Service.impl.StudentServiceImpl.testStudent(..)))" id="pt"/>
+		<aop:advisor pointcut-ref="pt" advice-ref="beforeAdvice"/>
+	</aop:config>
+	<aop:config>
+		<aop:pointcut expression="execution(* Boh.Sp.Service.impl.StudentServiceImpl.testStudent(..)))" id="pt2"/>
+		<aop:advisor pointcut-ref="pt2" advice-ref="afterAdvice"/>
+	</aop:config>
+	
+	<context:component-scan base-package="Boh.Sp"></context:component-scan>
+</beans>
